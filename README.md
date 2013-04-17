@@ -50,6 +50,7 @@ True duck typing in Java is not really possible. But, there is always a “but�
 Say there are 2 classes that are identical in their method signature, duck typing would allow those to be “interchangeable”. In Java you would need both of them to implement same interface to do it “correctly”.
 We can also do some hacking and create an interface and use that. As for the classes we could create an InvocationHandler and a Proxy, witch would forward the method calls to the classes.[(2) in the list above].
 The code would be like the following:
+
 		HashMap anything = new HashMap();
 
 		DuckInvocationHandler dih = new DuckInvocationHandler(anything);
@@ -61,6 +62,7 @@ The code would be like the following:
 		System.out.println("Out: "+ duck.get("test"));
 
 The interface to represent what the result we want:
+
 		public interface MyMap {
 		      Object get(Object i);
 		   }
@@ -87,6 +89,7 @@ Will work only with interfaces
 There is another way. A popular library for class manipulation is CGLib. It features the ability to Proxy a class, by creating a subclass of it at runtime.
 How will the code look? CGLib also has an InvocationHandler, and it also has only one method invoke. So just replace java.lang.reflect.InvocationHandler with net.sf.cglib.proxy.InvocationHandler, and the conversion process is done for the handler.
 The proxy creation process is a bit longer, but does have it's own advantages. The code:
+
 		// Use caching Enhancer object
 		Enhancer e = new Enhancer();
 		e.setUseCache(true);
@@ -100,7 +103,8 @@ The proxy creation process is a bit longer, but does have it's own advantages. T
 		Object output = e.create();
 
 This approach:
-Caching : As you can see on line 3 we set the Enhancer to use cache.
+
+		Caching : As you can see on line 3 we set the Enhancer to use cache.
 
 Works with both classes and interfaces
 
