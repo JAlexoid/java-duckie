@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<project name="duck" default="compile">
+
+	<description>
+            Duck typing package
+    </description>
+
+
+	<target name="clean">
+		<delete dir="./build/" includes="**/*" includeemptydirs="true" />
+		<delete dir="./dist/" includes="*" includeemptydirs="true" />
+		<delete dir="./build-test/" includes="**/*" includeemptydirs="true" />
+	</target>
+
+	<target name="compile" depends="clean">
+
+		<mkdir dir="./build/classes/" />
+		<mkdir dir="./build-test/classes/" />
+
+		<javac srcdir="./src/" destdir="./build/classes/" debug="true">
+			<classpath>
+				<fileset dir="./">
+					<include name="cglib.jar" />
+				</fileset>
+			</classpath>
+		</javac>
+
+		<javac srcdir="./test/" destdir="./build-test/classes/">
+			<classpath>
+				<pathelement path="./build/classes/" />
+				<fileset dir="./">
+					<include name="cglib.jar" />
+					<include name="junit.jar" />
+				</fileset>
+			</classpath>
+		</javac>
+		<antcall target="package" />
+	</target>
+
+	<target name="package">
+		<mkdir dir="dist" />
+		<delete dir="./dist/" includes="*.jar" />
+		<delete file="dist/${ant.project.name}-tests.jar" />
+		<jar jarfile="dist/${ant.project.name}.jar" basedir="build/classes/" />
+		<jar jarfile="dist/${ant.project.name}-tests.jar" basedir="build-test/classes/" />
+	</target>
+
+	<target name="test">
+		<tstamp />
+		<mkdir dir="./testresults/" />
+
+		<junit printsummary="yes" haltonfailure="yes">
+			<classpath>
+				<pathelement path="${java.class.path}" />
+				<pathelement path="dist/${ant.project.name}.jar" />
+				<pathelement path="dist/${ant.project.name}-tests.jar" />
+				<fileset dir="./">
+					<include name="cglib.jar" />
+					<include name="junit.jar" />
+				</fileset>
+			</classpath>
+
+			<formatter type="plain" extension="${DSTAMP}${TSTAMP}.txt" />
+
+			<batchtest fork="yes" todir="./testresults/">
+				<fileset dir="./test/">
+					<include name="**/*Test*.java" />
+				</fileset>
+			</batchtest>
+
+		</junit>
+	</target>
+
+
+	
+
+</project>
+
